@@ -1,0 +1,10 @@
+/* Only neutralize Transparent Zen's optional decorative window image while
+ * Veil controls the backdrop. Keep the mod, settings and all files intact. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media -moz-pref("mod.sameerasw.zen_bg_img_enabled") {
+    :root#main-window:not([popup-window])::before {
+      background-image: none !important;
+      background-color: transparent !important;
+    }
+  }
+}

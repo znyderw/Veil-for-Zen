@@ -1,0 +1,28 @@
+/* Veil native transparency. Included only for a translucent solid background.
+ * Root/wrapper/global backdrop are independent of the sidebar's color layer.
+ * No forced content underlay: preserve native page rendering without a pale frame. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root#main-window:not([popup-window]) {
+    background: transparent !important;
+    --zen-themed-toolbar-bg-transparent: transparent !important;
+    --zen-navigator-toolbox-background: transparent !important;
+  }
+  #main-window:not([popup-window]) #zen-main-app-wrapper,
+  #main-window:not([popup-window]) #browser,
+  #main-window:not([popup-window]) #navigator-toolbox,
+  #main-window:not([popup-window]) #navigator-toolbox #titlebar {
+    background: transparent !important;
+  }
+  #main-window:not([popup-window]) #zen-browser-background,
+  #main-window:not([popup-window]) #zen-browser-background::before,
+  #main-window:not([popup-window]) #zen-browser-background::after {
+    background: none !important;
+    background-image: none !important;
+  }
+  #main-window:not([popup-window]) #zen-browser-background > .zen-browser-grain {
+    display: none !important;
+  }
+  #main-window:not([popup-window]) #zen-appcontent-wrapper {
+    background: transparent !important;
+  }
+}

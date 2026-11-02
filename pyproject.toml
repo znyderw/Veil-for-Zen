@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "veil-for-zen"
+version = "0.9.0b0"
+description = "Independent Linux sidebar appearance editor for Zen Browser"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE.md"]
+requires-python = ">=3.11"
+dependencies = ["PySide6>=6.10,<6.13"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Topic :: Desktop Environment",
+]
+
+[project.scripts]
+veil-for-zen = "veil_for_zen.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["veil_for_zen*"]
+
+[tool.setuptools.package-data]
+veil_for_zen = ["*.css", "assets/*.svg"]

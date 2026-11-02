@@ -1,0 +1,30 @@
+/* Veil full-window backdrop. One image/color is painted on the native global
+ * background. Native sidebar overlays must not duplicate or cover that image.
+ * This stylesheet does not inject CSS into website documents. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root#main-window:not([popup-window]) {
+    background: transparent !important;
+    --zen-themed-toolbar-bg-transparent: transparent !important;
+    --zen-navigator-toolbox-background: transparent !important;
+  }
+  #main-window:not([popup-window]) #zen-main-app-wrapper,
+  #main-window:not([popup-window]) #browser,
+  #main-window:not([popup-window]) #navigator-toolbox,
+  #main-window:not([popup-window]) #titlebar,
+  #main-window:not([popup-window]) #zen-appcontent-wrapper,
+  #main-window:not([popup-window]) #zen-tabbox-wrapper,
+  #main-window:not([popup-window]) #tabbrowser-tabbox,
+  #main-window:not([popup-window]) #tabbrowser-tabpanels,
+  #main-window:not([popup-window]) .zen-toolbar-background,
+  #main-window:not([popup-window]) .zen-toolbar-background::before,
+  #main-window:not([popup-window]) .zen-toolbar-background::after,
+  #main-window #navigator-toolbox #titlebar > #zen-toolbar-background,
+  #main-window #navigator-toolbox #titlebar > #zen-toolbar-background::before,
+  #main-window #navigator-toolbox #titlebar > #zen-toolbar-background::after {
+    background: transparent !important;
+    background-image: none !important;
+  }
+  #main-window:not([popup-window]) .zen-toolbar-background > .zen-browser-grain {
+    display: none !important;
+  }
+}

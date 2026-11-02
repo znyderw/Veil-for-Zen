@@ -12,27 +12,29 @@ os.environ['QT_QPA_PLATFORMTHEME']=''
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QImage,QColor
 from PySide6.QtWidgets import QApplication,QLineEdit
-from core.settings import DEFAULTS,normalize,load_settings,save_json
-from core.rendering import background_rect,render_wallpaper,gaussian
-from core.color_extractor import extract_palette,tab_paint
-from core.presets import Presets
-from core.zen_integration import save_mod,build_css,merge_import,detect_dimensions,MARKER
-from ui.main_window import Studio
-from ui.theme import STYLE
-from core.image_library import scan_images,import_image
+from veil_for_zen.core.settings import DEFAULTS,normalize,load_settings,save_json
+from veil_for_zen.core.rendering import background_rect,render_wallpaper,gaussian
+from veil_for_zen.core.color_extractor import extract_palette,tab_paint
+from veil_for_zen.core.presets import Presets
+from veil_for_zen.core.zen_integration import save_mod,build_css,merge_import,detect_dimensions,MARKER,backup_root
+from veil_for_zen.ui.main_window import Studio
+from veil_for_zen.ui.theme import STYLE
+from veil_for_zen.core.image_library import scan_images,import_image
 
 app=QApplication.instance() or QApplication([])
-app.setStyle('Fusion');app.setStyleSheet(STYLE)
+from veil_for_zen.ui.theme import apply_theme
+apply_theme(app)
 
 
 class Fixture(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name)
+        self.env=patch.dict(os.environ,{'XDG_CONFIG_HOME':str(self.root/'config'),'XDG_DATA_HOME':str(self.root/'data'),'XDG_CACHE_HOME':str(self.root/'cache')});self.env.start()
         self.image=self.root/'wall paper.png'
         img=QImage(120,200,QImage.Format_RGBA8888);img.fill(QColor('#59796d'));img.save(str(self.image))
         self.profile=self.root/'profile';self.profile.mkdir();(self.profile/'prefs.js').write_text('/* test */')
-        self.s=normalize(DEFAULTS|dict(image=str(self.image),profile=str(self.profile),preview_width=180,preview_height=400,blur=0,controls=0))
-    def tearDown(self):self.tmp.cleanup()
+        self.s=normalize(DEFAULTS|dict(background_mode='Imagem',image=str(self.image),profile=str(self.profile),preview_width=180,preview_height=400,blur=0,controls=0))
+    def tearDown(self):self.env.stop();self.tmp.cleanup()
 
 
 class LibraryTest(Fixture):
@@ -153,11 +155,13 @@ class IntegrationTest(Fixture):
         updated=(chrome/'userChrome.css').read_text()
         self.assertTrue(updated.startswith('@charset "UTF-8";'))
         self.assertIn(original.split(';',1)[1],updated)
-        self.assertEqual((backup/'userChrome.css').read_text(),original)
+        manifest=json.loads((backup/'manifest.json').read_text())
+        entry=next(f for f in manifest['files'] if f['path']=='chrome/userChrome.css')
+        self.assertEqual((backup/entry['before']).read_text(),original)
         self.assertEqual((chrome/'sidebar-background.css').read_text(),'legacy CSS, do not touch')
         save_mod(self.s);self.assertEqual((chrome/'userChrome.css').read_text(),updated)
-        self.assertEqual(len(list((self.profile/'sidebar-studio-backups').iterdir())),2)
-        self.assertTrue((chrome/'zen-sidebar-studio-v2.css').read_text().startswith(MARKER))
+        self.assertEqual(len(list(backup_root(self.profile).glob('*/manifest.json'))),2)
+        self.assertTrue((chrome/'veil-for-zen.css').read_text().startswith(MARKER))
         self.assertIn('toolkit.legacyUserProfileCustomizations.stylesheets', (self.profile/'user.js').read_text())
     def test_preserve_userjs_and_existing_enabled_preference(self):
         original='// unrelated\nuser_pref("network.dns.disablePrefetch", false);\nuser_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);\n'
@@ -172,30 +176,30 @@ class IntegrationTest(Fixture):
             self.assertIn(selector,css)
         self.assertNotIn('[image*=',css)
     def test_disabled_import_does_not_prevent_install(self):
-        original='/* @import url("zen-sidebar-studio-v2.css"); */\n@import url("other.css");\n'
+        original='/* @import url("veil-for-zen.css"); */\n@import url("other.css");\n'
         merged=merge_import(original)
-        self.assertTrue(merged.endswith(original));self.assertEqual(merged.count('@import url("zen-sidebar-studio-v2.css");'),2)
+        self.assertTrue(merged.endswith(original));self.assertEqual(merged.count('@import url("veil-for-zen.css");'),2)
     def test_missing_image_does_not_write(self):
         with self.assertRaises(ValueError):save_mod(self.s|{'image':str(self.root/'missing.png')})
         self.assertFalse((self.profile/'chrome').exists())
     def test_conflicting_file_preserved(self):
-        chrome=self.profile/'chrome';chrome.mkdir();target=chrome/'zen-sidebar-studio-v2.css';target.write_text('foreign')
+        chrome=self.profile/'chrome';chrome.mkdir();target=chrome/'veil-for-zen.css';target.write_text('foreign')
         with self.assertRaises(ValueError):save_mod(self.s)
         self.assertEqual(target.read_text(),'foreign')
     def test_rollback_on_write_failure(self):
         chrome=self.profile/'chrome';chrome.mkdir();user=chrome/'userChrome.css';user.write_text('original')
-        from core.settings import atomic_write as real_write
+        from veil_for_zen.core.settings import atomic_write as real_write
         failed=False
         def failing(path,data):
             nonlocal failed
             if Path(path)==user and not failed:failed=True;raise OSError('simulated failure')
             real_write(path,data)
-        with patch('core.zen_integration.atomic_write',side_effect=failing),self.assertRaises(OSError):save_mod(self.s)
-        self.assertEqual(user.read_text(),'original');self.assertFalse((chrome/'zen-sidebar-studio-v2.css').exists())
+        with patch('veil_for_zen.core.zen_integration.atomic_write',side_effect=failing),self.assertRaises(OSError):save_mod(self.s)
+        self.assertEqual(user.read_text(),'original');self.assertFalse((chrome/'veil-for-zen.css').exists())
     def test_external_window_not_used_as_sidebar(self):
         (self.profile/'xulstore.json').write_text(json.dumps({'chrome://browser/content/browser.xhtml':{'navigator-toolbox':{'width':'178px'}}}))
         result=type('Result',(),dict(returncode=0,stdout=json.dumps([{'class':'zen','size':[1760,990]}])))()
-        with patch('core.zen_integration.subprocess.run',return_value=result):detected=detect_dimensions(self.profile)
+        with patch('veil_for_zen.core.zen_integration.subprocess.run',return_value=result):detected=detect_dimensions(self.profile)
         self.assertFalse(detected['exact']);self.assertEqual(detected['saved_width'],178)
         self.assertEqual(detected['window'],[1760,990]);self.assertNotIn('height',detected)
 
@@ -223,7 +227,7 @@ class InterfaceTest(Fixture):
             while w.working and time.monotonic()<deadline:
                 app.processEvents();time.sleep(.01)
             self.assertFalse(w.working)
-            self.assertTrue((self.profile/'chrome/zen-sidebar-studio-v2.css').exists())
+            self.assertTrue((self.profile/'chrome/veil-for-zen.css').exists())
             self.assertEqual(load_settings(path)['opacity'],55)
             self.assertEqual(len(w.presets.data['history']),2)
         finally:

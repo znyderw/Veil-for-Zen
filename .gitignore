@@ -8,3 +8,16 @@ __pycache__/
 /settings.json
 /presets.json
 /assets/v1-backup/
+
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.coverage
+*.pkg.tar.*
+packaging/src/
+packaging/pkg/
+
+# Preserve the developer library locally; do not publish it
+/fn_zen/
+/assets/

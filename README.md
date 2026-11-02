@@ -1,221 +1,148 @@
-# Zen Sidebar Studio 2.0
+# Veil for Zen
 
-Aplicativo local em Python/PySide6 para personalizar o fundo e as cores da
-barra lateral do Zen Browser. Abra **Zen Sidebar Studio** no menu de aplicativos
-ou execute `python studio.py` nesta pasta. Não é uma extensão nem um mod
-publicado na loja do Zen. Não precisa de acesso à internet em execução.
+**v0.9.0-beta · beta preparada localmente, ainda sem release pública.** Aplicativo independente para personalizar o fundo da barra lateral ou da janela inteira do Zen Browser no Linux, além das cores das abas. Não é uma extensão oficial e não é desenvolvido ou mantido pela equipe do Zen.
 
-![Interface do Studio](assets/studio-2.png)
+![Veil com fundo sólido](docs/veil-solid.png)
 
-## Como usar
+![Prévia do fundo no navegador inteiro](docs/veil-full-browser.png)
 
-1. Escolha uma das miniaturas da biblioteca **fn_zen**. Para incluir novos fundos,
-   copie arquivos para essa pasta, use **Adicionar imagens…** ou arraste arquivos
-   para a janela. A inclusão copia a imagem para a biblioteca, preservando o original.
-2. Ajuste a imagem e o enquadramento. As seções **Aparência das abas**,
-   **Efeitos** e **Configurações avançadas** são recolhíveis.
-3. Nas configurações avançadas, informe a largura e a altura **CSS da área de
-   fundo da barra**, em pixels. O valor inicial é manual, não uma medição.
-4. Escolha uma paleta, seu estilo e intensidade. Clique em uma amostra para
-   escolher a cor em uso; as outras cores ficam disponíveis para seleção.
-5. Clique em **Aplicar no Zen**. Feche completamente e reabra o Zen para carregar
-   o CSS. O painel não fecha o navegador automaticamente.
+Capturas da interface Qt com perfil fictício e imagem geométrica própria; não são capturas de uma página real do Zen.
 
-O indicador no cabeçalho mostra mudanças não aplicadas. **Restaurar alterações**
-volta à última configuração salva, sem escrever no perfil. Salvar um preset
-não aplica a configuração. Reabra o Studio após atualizar a partir da versão 1.
+## Funcionalidades
 
-### Biblioteca de imagens
+- Destino selecionável: **Barra lateral** ou **Navegador inteiro**, com uma imagem contínua no fundo da janela.
+- Fundo de imagem ou cor sólida, com hexadecimal, seletor visual, cores recentes, paletas e transparência de 0 a 100%.
+- Biblioteca com importação por arquivo ou arrastar e soltar, miniaturas em cache e carregamento em lotes de 48 imagens.
+- Opacidade, escurecimento, blur, brilho, contraste, escala e posição da imagem.
+- Abas com paletas automáticas, prontas ou personalizadas; bordas, preenchimento e intensidade.
+- Prévia assíncrona, com proporções preservadas e divisória ajustável. Em janelas estreitas, os painéis ficam empilhados.
+- Perfis nativos e Flatpak descobertos por `profiles.ini`, com seleção manual como alternativa.
+- Presets de aparência portáteis com imagem incorporada, separados do histórico local.
+- Aplicação explícita, backup, desativação e restauração com detecção de alterações externas.
 
-`fn_zen/`, na raiz deste projeto, é a pasta principal dos fundos. O painel exibe
-suas imagens como opções com miniaturas, sem precisar informar um caminho.
-Arquivos sem extensão também são reconhecidos pelo conteúdo; arquivos que não
-são imagens são ignorados. **Abrir fn_zen** abre a pasta no gerenciador de arquivos.
-A lista acompanha alterações na pasta e nas imagens; miniaturas são carregadas
-em segundo plano. A pasta usa apenas arquivos diretamente dentro dela, sem subpastas.
-Adicionar uma imagem com nome já existente preserva a anterior e gera um nome
-alternativo. Configurações e presets antigos com imagens externas continuam
-compatíveis; basta escolher uma miniatura para passar a usar a biblioteca.
+## Requisitos
 
-A aplicação no Zen continua criando uma cópia independente dentro do perfil,
-para o navegador carregar o fundo mesmo quando o Studio está fechado. Mudar uma
-opção no painel requer **Aplicar no Zen** e reiniciar o navegador para ter efeito.
+Linux, Python 3.11 ou posterior, PySide6 `>=6.10,<6.13` e Zen Browser instalado com um perfil inicializado. Imagens: PNG, JPEG, WebP e BMP, inclusive arquivos sem extensão; limite de 100 megapixels. A integração com Hyprland é opcional. Não precisa de internet durante o uso normal.
 
-## Enquadramento e dimensões
+O alvo inicial é Arch Linux/Omarchy. Outros desktops Linux e instalações do Zen precisam de validação manual; veja [os resultados e pendências](docs/VALIDATION.md).
 
-- **Largura:** mantém a proporção e permite escala de 20% a 300% da largura.
-- **Conter:** mostra a imagem inteira dentro da área configurada.
-- **Preencher:** ocupa toda a área, com recorte quando as proporções diferem.
-- **Esticar:** ocupa toda a área e pode deformar a imagem.
+## Arch Linux / Omarchy
 
-A posição usa a mesma regra de
-[background-position do CSS](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position):
-`deslocamento = (tamanho da área − tamanho renderizado da imagem) × posição / 100`.
-Ela funciona também quando o espaço restante é negativo (recorte).
+Não há pacote publicado no AUR. Após obter os artefatos da candidata, coloque `PKGBUILD` e `veil-for-zen-0.9.0-beta.tar.gz` na mesma pasta e execute:
 
-**Ajustar prévia à janela** reduz apenas a apresentação visual. O cálculo usa
-sempre a largura e altura virtuais configuradas. Desmarcar permite ver 1:1 com
-rolagem. Redimensionar a janela do Studio não altera o enquadramento.
+```bash
+makepkg -si
+```
 
-### Automático: limites honestos
+Dependências de construção: `base-devel`, `python-setuptools`, `python-installer`. O pacote declara `python` e `pyside6` como dependências de execução. A instalação não toca em perfis do navegador. O `PKGBUILD` completo, com hash real, é gerado em `dist/`; o modelo em `packaging/` exige preparar primeiro os artefatos.
 
-O painel consulta `hyprctl -j clients` (somente leitura, com timeout) para
-localizar o Zen e lê `xulstore.json` do perfil para encontrar a largura persistida
-de `navigator-toolbox`. Essa largura pode estar desatualizada e inclui o toolbox,
-não necessariamente o retângulo interno pintado; a altura interna não é exposta
-por esse arquivo. O tamanho da janela externa **nunca** é usado como largura
-ou altura da barra.
+Para preparar a partir do código:
 
-Sem uma ponte para o DOM do Zen, nenhuma dessas fontes comprova as duas medidas
-internas atuais. Portanto, **Automático** mostra os dados disponíveis e usa
-explicitamente as medidas **manuais** como fallback. Não inicia servidores de
-inspeção, injeta scripts, altera o navegador ou promete uma detecção inexistente.
-É possível usar o Browser Toolbox do Zen para medir o retângulo de
-`#titlebar > #zen-toolbar-background`, mas isso não é obrigatório para operar
-os controles; medidas manuais continuam disponíveis.
+```bash
+python tools/prepare_release.py
+```
 
-## Fidelidade e desempenho da prévia
+## Outras distribuições: ambiente Python isolado
 
-O enquadramento, opacidade, escurecimento e ordem dos filtros seguem o CSS
-gerado. O blur é uma convolução gaussiana separável com núcleo de até três
-sigmas, acumulada em imagens de 16 bits para preservar brilho e transparência.
-O [blur CSS](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/blur)
-também é gaussiano, mas o rasterizador Qt não é o Gecko: podem ocorrer diferenças
-nas bordas, arredondamentos, fontes, composição de filtros e backdrop-filter.
+Instale Python 3.11+ com suporte a `venv`/pip, as bibliotecas de desktop exigidas pelo Qt e execute, na pasta extraída do projeto:
 
-O vidro dos controles é renderizado sobre uma versão desfocada do fundo. As
-abas fictícias incluem essenciais, fixada, selecionada, hover e normais, com
-margens e alturas próximas às regras instaladas do Zen (normal ~34 px; essenciais
-~44–46 px). Não há captura da sessão real. Abas, títulos, barra de endereço e
-controles podem diferir conforme versão, zoom da interface e outros mods.
-O efeito nativo de favicon das essenciais, quando habilitado no Zen, é preservado.
+```bash
+./tools/install-local.sh
+```
 
-As imagens são decodificadas com orientação EXIF e cache. Para limitar memória,
-o processamento da prévia usa imagem-fonte de até 2400 px no maior eixo e canvas
-de até 1400 px no maior eixo. A geometria continua baseada nas medidas virtuais;
-pode haver perda de detalhe na prévia, não no arquivo aplicado. A exportação
-normaliza a orientação em PNG sem a redução de resolução da prévia.
-Arquivos acima de 100 megapixels ou recusados pelo decodificador Qt são rejeitados.
+O script cria um ambiente virtual exclusivo, instala as dependências Python automaticamente e registra o comando e o atalho. Não usa `sudo pip`. A primeira instalação exige acesso ao índice Python. Se sua distribuição separar `venv` em outro pacote, instale esse componente pelo gerenciador da distribuição.
 
-Filtros e extração de cores rodam em workers, com debounce e descarte de resultados
-antigos; o paintEvent só desenha as imagens prontas. Não há NumPy, Pillow ou
-pacotes extras além de PySide6.
+Abra **Veil for Zen** no menu ou execute:
 
-## Cores das abas
+```bash
+~/.local/bin/veil-for-zen
+```
 
-**Automática:** um histograma ponderado extrai até quatro famílias dominantes,
-reduzindo a influência de extremos claros/escuros, transparência e saturação alta.
-As cores são suavizadas. **Atualizar paleta da imagem** refaz a análise.
+O ambiente fica em `$XDG_DATA_HOME/veil-for-zen/runtime` (padrão `~/.local/share/veil-for-zen/runtime`). Uma instalação completa com download das dependências ainda precisa ser validada fora do ambiente de desenvolvimento.
 
-**Personalizada:** Vinho escuro, Azul noturno, Cinza neutro, Verde floresta ou
-edição manual da cor em uso pelo seletor Qt. Ao pintar, saturação e luminosidade
-são limitadas para manter o aspecto suave, inclusive para uma cor manual intensa.
+## Primeiro uso e perfis
 
-Os estilos são **Bordas discretas**, **Preenchimento suave** e **Combinado**,
-com intensidade de 0 a 100% (padrão 30%). Zero remove a cor; preserva o fundo
-neutro de legibilidade. A proteção do texto é graduada sobre um mínimo escuro
-para manter contraste mesmo com wallpaper claro. Seleção e hover têm fundos
-e intensidades próprias; o texto usa branco suave e sombra.
+1. Se houver dados antigos do Zen Sidebar Studio, escolha se deseja copiar para o Veil. Os originais permanecem intactos.
+2. Confira o perfil no seletor superior. Havendo apenas um perfil detectado, ele será sugerido; com vários, escolha explicitamente. Passe o mouse para consultar o caminho completo.
+3. Se nenhum perfil aparecer, abra `about:profiles` no Zen e selecione sua **pasta raiz** em **Escolher pasta…**. Ela deve conter `prefs.js` e permitir escrita.
+4. Em **Fundo → Aplicar em**, escolha **Barra lateral** ou **Navegador inteiro**. Depois escolha **Imagem** e adicione fundos, ou use **Cor sólida**. Ajuste as abas se desejar.
+   No modo de cor sólida, **Transparência** vai de 0% (opaco) a 100% (sem cor de fundo). A grade da prévia indica transparência; o resultado revela as camadas abaixo da barra no Zen. Ao aplicar um valor acima de zero, o Veil habilita `zen.widget.linux.transparency` e `browser.tabs.allow_transparent_browser` no perfil selecionado e remove as camadas nativas que encobrem a barra. É necessário reiniciar o Zen. O compositor ainda precisa suportar janelas com alfa; o Veil não reduz a opacidade da janela inteira nem torna sites transparentes. Abas e controles mantêm sua proteção de contraste. O ajuste é independente da opacidade da imagem e fica salvo em configurações e presets. Com **Navegador inteiro**, imagem, cor e transparência cobrem um único fundo global; não se repetem separadamente na barra. Os fundos nativos que cobririam essa camada são removidos, inclusive a base de conteúdo que podia criar um contorno claro. Páginas e páginas de nova aba com fundo próprio continuam cobrindo o fundo: o Veil não injeta estilos em sites para removê-lo. Em **Avançado**, as dimensões da prévia da janela ficam separadas das dimensões da barra; alternar o destino preserva ambos os ajustes.
+5. Clique em **Aplicar no Zen** e reinicie o navegador manualmente.
 
-A cor em uso se aplica uniformemente às abas; não são atribuídas cores por ordem
-ou por suposto domínio. Foram inspecionados no `omni.ja` do Zen instalado:
+A descoberta procura `~/.config/zen`, `$XDG_CONFIG_HOME/zen`, `~/.zen` e locais conhecidos do Flatpak, incluindo `~/.var/app/app.zen_browser.zen/.zen`. Caminhos personalizados declarados em `profiles.ini` são aceitos. Somente o perfil selecionado é alterado. Verificar `prefs.js` identifica uma pasta de perfil Mozilla; a seleção manual depende de você confirmar que é um perfil do Zen.
 
-- `tabbrowser/tab.mjs`: estados `selected` e `visuallyselected`;
-- `zen-tabs/vertical-tabs.css`: `.tabbrowser-tab`, `.tab-background`, `[pinned]`,
-  `[zen-essential]`, posicionamento e efeitos nativos;
-- `browser.xhtml`: `#navigator-toolbox`, `#titlebar`, `#zen-toolbar-background`.
+## Migração e armazenamento
 
-**Por site não está disponível.** CSS de userChrome não analisa as cores de um
-favicon nem recebe um atributo de domínio estável para todas as abas. A URL do
-favicon pode ser um dado embutido, cache, proxy ou outro host, e títulos são
-arbitrários. Regras por esses valores produziriam falsas associações. Uma futura
-ponte privilegiada para metadados de abas exigiria outra arquitetura; não foi
-simulada aqui. Layout, navegação, fixação e essencialidade não são alterados.
+O lançador antigo `python studio.py` continua disponível. Para indicar outra instalação anterior:
 
-## Presets e histórico
+```bash
+veil-for-zen --legacy-dir /caminho/zen-sidebar-studio
+```
 
-**Salvar preset** armazena imagem, filtros, posição, escala, dimensões, paleta,
-cor em uso, intensidade e estilo das abas. Em **Presets e histórico**, você pode
-carregar, renomear e excluir presets. Exclusão pede confirmação e não remove a
-imagem, o histórico ou backups.
+A migração é oferecida antes de existirem dados do Veil. Copia configurações, biblioteca `fn_zen`, imagens referenciadas, presets e histórico, mantendo uma cópia dos JSON originais. Não substitui dados novos existentes. Uma imagem antiga ausente permanece referenciada para você escolher uma substituta.
 
-Ao aplicar no Zen, as configurações anterior e nova entram no histórico.
-Carregar uma entrada restaura os controles; é preciso aplicar para alterar o
-Zen. O perfil atual é preservado ao carregar presets, evitando redirecionar a
-escrita silenciosamente. Imagens ausentes podem ser substituídas pelo seletor.
-Versões futuras/incompatíveis ou arquivos inválidos são rejeitados com mensagem,
-sem apagar o arquivo original. O histórico da interface começa com a versão 2;
-os backups antigos da versão 1 continuam intactos no perfil.
+| Conteúdo | Diretório padrão |
+|---|---|
+| Configuração | `~/.config/veil-for-zen/settings.json` |
+| Imagens, presets e histórico | `~/.local/share/veil-for-zen/` |
+| Backups por perfil | `~/.local/share/veil-for-zen/backups/` |
+| Miniaturas | `~/.cache/veil-for-zen/thumbnails/` |
 
-## Arquitetura e compatibilidade
+`XDG_CONFIG_HOME`, `XDG_DATA_HOME` e `XDG_CACHE_HOME` substituem as respectivas raízes quando contêm caminhos absolutos. Nenhum dado mutável é gravado na instalação. O schema de configurações 2 é mantido com campos adicionais compatíveis; configurações 1/2 são normalizadas sem apagar seus originais.
 
-- `studio.py`: entrada e ajustes locais para Qt/Wayland.
-- `core/settings.py`: esquema versão 2, migração da versão 1, validação e escrita atômica.
-- `core/rendering.py`: geometria CSS, cache e efeitos de imagem.
-- `core/image_library.py`: descoberta, miniaturas e importação segura em fn_zen.
-- `core/color_extractor.py`: extração de paletas e cores dos estados das abas.
-- `core/zen_integration.py`: leitura de medidas, geração de CSS e aplicação com backup.
-- `core/presets.py`: presets e histórico.
-- `ui/main_window.py`: fluxos, feedback, arrastar/soltar e biblioteca.
-- `ui/controls_panel.py`: seções e controles.
-- `ui/preview.py`: desenho e agendamento de workers.
-- `ui/theme.py`: tema visual.
-- `chrome.css`: template do CSS aplicado, não destinado a importação direta.
-- `settings.json`: configuração do usuário; migração acontece em memória e só é
-  persistida ao aplicar. Os controles antigos, inclusive blur em décimos de px,
-  continuam compatíveis.
-- `assets/v1-backup/`: cópia do código e configurações encontrados no início da atualização.
+## Presets
 
-O perfil anterior continua como padrão; é possível escolher outro pela interface.
-O aplicativo mantém Python e PySide6, já instalados nesta máquina. O atalho
-existente no menu continua válido. Não altera configuração global do Hyprland,
-Omarchy, transparência do desktop ou estilos de sites.
+**Salvar preset** cria uma aparência nomeada. Em **Presets e histórico**, selecione a categoria para carregar presets ou estados anteriores. Presets podem ser renomeados, excluídos, importados e exportados. Carregar não escreve no Zen: revise e aplique.
 
-## Escrita no perfil e recuperação
+A exportação remove o perfil pessoal e incorpora a imagem (até 20 MB). A importação valida o JSON e o conteúdo da imagem, copiando-a para os dados do Veil. O perfil atualmente selecionado é mantido ao carregar. Presets antigos com imagens ausentes pedem uma substituta no modo de imagem. Excluir um preset não exclui imagens nem backups. O histórico de aparência é independente dos backups dos arquivos do navegador.
 
-Somente **Aplicar no Zen** modifica o perfil:
+## CSS, desativação e restauração
 
-1. Valida imagem, perfil (`prefs.js`) e destinos, recusando links simbólicos nos
-   arquivos gerenciados ou pastas chrome/backgrounds.
-2. Cria `sidebar-studio-backups/<timestamp>/`, com CSS/imports anteriores,
-   `user.js` anterior se existir e snapshot JSON dos ajustes.
-3. Grava uma cópia PNG da imagem com nome baseado no hash do conteúdo em
-   `chrome/backgrounds/zss-<hash>.png`.
-4. Grava `chrome/zen-sidebar-studio-v2.css` e adiciona seu import ao
-   `chrome/userChrome.css`. Preserva o conteúdo original e eventual `@charset`.
-   Não duplica imports nem remove regras/imports da versão 1 ou de terceiros.
-5. Se necessário, acrescenta a preferência que habilita estilos locais em
-   `user.js`, preservando as outras preferências. Não modifica `prefs.js`.
+O Veil cria `chrome/veil-for-zen.css`, uma imagem independente em `chrome/backgrounds/` com referência relativa ao perfil quando necessário e um import em `chrome/userChrome.css`. Pode habilitar `toolkit.legacyUserProfileCustomizations.stylesheets` por um bloco identificado em `user.js`; nunca edita `prefs.js`. A transparência nativa usa um bloco separado com os valores anteriores registrados. Ao desativar, voltar a fundo opaco/imagem ou restaurar um snapshot anterior à transparência, o Veil escreve os valores anteriores para o próximo início do Zen. Esses overrides de restauração são mantidos em `user.js`, pois apenas remover uma preferência não desfaz o valor que o navegador já persistiu.
 
-O CSS usa variáveis `--zss-*` e seletores restritos à barra, com precedência sobre
-a configuração antiga do Studio. Arquivo homônimo sem assinatura do Studio é
-preservado e causa erro, em vez de ser sobrescrito. Gravações usam arquivo
-temporário + `fsync` + substituição atômica por arquivo. Erros durante a instalação
-restauram os arquivos anteriores. Não é uma transação entre arquivos à prova de
-queda de energia; em caso de interrupção forçada, o backup permanece disponível.
-Backups e imagens antigos não são removidos automaticamente.
+Arquivos existentes são copiados antes da gravação. Escritas são atômicas por arquivo; um erro tenta reverter apenas os arquivos já escritos que não sofreram edição externa. A transação não é atomicamente única entre vários arquivos: uma queda abrupta pode exigir recuperação pelo backup. O Veil não encerra o Zen.
 
-Para reverter o resultado visual sem editar CSS, carregue uma entrada anterior
-no histórico e aplique. Para remover completamente a versão 2, remova o import
-`@import url("zen-sidebar-studio-v2.css");` do userChrome e reinicie. A versão 1,
-se ainda importada, voltará a aparecer. Não remova arquivos de terceiros.
+- **Mais → Desativar personalização:** remove apenas o import gerenciado, preservando outros estilos. Mantém CSS, imagens e preferência de estilos locais para não prejudicar outros mods; restaura as preferências nativas de transparência que alterou, sem apagar configurações externas.
+- **Mais → Restaurar último backup** (ou **Restaurar outro backup…** para selecionar um snapshot anterior): recupera o estado imediatamente anterior à última operação concluída. Recusa a restauração se algum arquivo tiver sido editado depois, evitando destruir alterações externas. A restauração também gera um backup, permitindo desfazê-la.
 
-## Testes
+Imports ativos do antigo `zen-sidebar-studio-v2.css` são substituídos somente quando seu arquivo tem o marcador reconhecido do Studio. O arquivo antigo é preservado e o backup recupera o import anterior. Outros mods são preservados nos arquivos; regras CSS conflitantes ainda podem afetar a aparência.
+
+## Desinstalação
+
+Primeiro, desative a personalização pelo Veil e reinicie o Zen. Depois:
+
+```bash
+# Pacote Arch
+sudo pacman -R veil-for-zen
+
+# Instalação isolada, a partir da pasta do projeto
+./tools/uninstall-local.sh
+```
+
+Dados pessoais e perfis do Zen são preservados. Para limpar os dados opcionais, após guardar os presets/backups desejados, remova **somente** as pastas `veil-for-zen` nas raízes XDG de configuração, dados e cache. Não apague o perfil do Zen. Os arquivos de CSS e imagens inativos podem continuar no perfil sem efeito.
+
+## Solução de problemas e limites
+
+- **Perfil não encontrado:** inicialize o Zen ao menos uma vez e use a pasta raiz indicada em `about:profiles`.
+- **Permissão negada:** escolha um perfil do seu usuário com permissão de escrita. Não execute o Veil como root.
+- **Estilo não aparece:** confirme o perfil, reinicie o Zen e verifique conflitos com outros mods. Seletores internos do Zen podem mudar entre versões.
+- **Ícones e pesquisa pouco visíveis:** o Veil define cores claras, sombra discreta nos ícones nativos e proteção escura no campo de pesquisa, inclusive fora do titlebar. Favicons não recebem filtros de cor. Reinicie o Zen após aplicar.
+- **Imagem estranha ao deixar transparente:** se Transparent Zen estiver com seu fundo decorativo ativado, o Veil neutraliza essa camada enquanto controla o fundo (modo transparente ou navegador inteiro), preservando os arquivos e preferências do mod. Ao desativar o Veil, a configuração original do outro mod volta a valer.
+- **Edição externa detectada:** preserve sua edição e consulte os snapshots em `backups/`; não substitua arquivos para forçar uma restauração.
+- **Prévia diferente:** as abas da prévia são exemplos. Qt e Gecko renderizam filtros de forma diferente. Dimensões manuais representam a área CSS da barra ou da janela, conforme o destino escolhido. O Veil não altera as dimensões reais da barra.
+- **Automático:** o Veil consulta dimensões persistidas e, opcionalmente, Hyprland; não tem acesso ao DOM do navegador e não promete medir a barra com exatidão.
+- **Cor por site/favicon:** não implementada; o CSS gerado não recebe um domínio confiável nem extrai cores de favicons.
+- **Flatpak:** descoberta de perfis implementada; imagens aplicadas são copiadas para o perfil para reduzir problemas de acesso. O aplicativo Veil ainda não é distribuído como Flatpak; permissões e comportamento no Zen Flatpak aguardam teste real.
+- **Cache e backups:** caches em memória são limitados; miniaturas e backups em disco não têm expiração automática nesta beta. O cache pode ser removido com o aplicativo fechado.
+
+## Desenvolvimento e publicação
 
 ```bash
 QT_QPA_PLATFORM=offscreen QT_QPA_PLATFORMTHEME= python -m unittest discover -s tests -v
-python -m compileall -q studio.py core ui tests
+python tools/benchmark.py /caminho/para/biblioteca
+python tools/build.py --wheel
 ```
 
-A suíte usa imagens sintéticas e perfis temporários: migração, entradas inválidas,
-geometria em diferentes proporções, composição dos filtros, conservação de brilho
-no blur, paletas, estados de abas, presets/histórico, imagens ausentes, geração
-de CSS, preservação de terceiros, rollback de falha simulada, fallback de
-medidas, inicialização e redimensionamento da interface. Nenhum teste escreve no
-perfil real. A inspeção estática de CSS verifica variáveis, blocos e seletores;
-não substitui um parser Gecko.
+Veja [CHANGELOG](CHANGELOG.md), [contribuição](CONTRIBUTING.md), [validação](docs/VALIDATION.md), [performance](docs/PERFORMANCE.md) e [notas da candidata](docs/RELEASE-0.9.0-beta.md).
 
-A validação visual no Zen real continua necessária para conflitos com outros
-mods, efeitos nativos de essenciais, zoom, barra recolhida/compacta e diferenças
-de renderização. A detecção interna exata continua indisponível. Não foi prometida
-fidelidade absoluta nem associação automática de cores por domínio.
+Licenciado sob [MIT](LICENSE); consulte também [NOTICE](NOTICE.md) para dependências e conteúdo de terceiros. Nenhuma informação pessoal de mantenedor foi inserida. A publicação, a tag remota, a release e o envio ao AUR não são automáticos.

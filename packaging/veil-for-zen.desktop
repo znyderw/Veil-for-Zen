@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Veil for Zen
+Comment=Customize the Zen Browser sidebar
+Comment[pt_BR]=Personalize a barra lateral do Zen Browser
+Exec=veil-for-zen
+Icon=veil-for-zen
+Terminal=false
+Categories=Settings;
+StartupNotify=true
+StartupWMClass=veil-for-zen
+X-Veil-Managed=true

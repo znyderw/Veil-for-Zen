@@ -1,0 +1,30 @@
+/* Zen's library lives outside navigator-toolbox and inherits its own palette.
+ * Protect its text over any backdrop without changing native visibility,
+ * animation opacity, disabled controls, or the colors of site favicons. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  #main-window zen-library {
+    color-scheme: dark !important;
+    color: #f5f5f5 !important;
+    --toolbar-color-scheme: dark !important;
+    --toolbar-color: #f5f5f5 !important;
+    --toolbox-textcolor: #f5f5f5 !important;
+    --toolbarbutton-icon-fill: #f5f5f5 !important;
+    --zen-accent-button-color: #eaeaea !important;
+    --zen-library-pill-bg: rgb(255 255 255 / 0.09) !important;
+    --zen-library-pill-hover-bg: rgb(255 255 255 / 0.16) !important;
+  }
+  #main-window zen-library #zen-library-panel {
+    background: rgb(16 17 20 / 0.9) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+  #main-window zen-library input,
+  #main-window zen-library select,
+  #main-window zen-library .zen-library-tab,
+  #main-window zen-library toolbarbutton:not([disabled]) {
+    color: #f5f5f5 !important;
+  }
+  #main-window zen-library input::placeholder {
+    color: #c8cbd4 !important;
+    opacity: 1 !important;
+  }
+}

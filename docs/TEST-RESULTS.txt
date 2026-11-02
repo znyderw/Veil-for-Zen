@@ -1,0 +1,89 @@
+Environment: Omarchy 4.0.6; Python 3.14; PySide6 6.12.0; Qt offscreen
+Command: QT_QPA_PLATFORM=offscreen QT_QPA_PLATFORMTHEME= python -m unittest discover -s tests -v
+All test writes target temporary profiles and XDG roots.
+
+test_apply_keeps_other_mod_files_and_preferences_unchanged (test_public.BackdropCompatibilityTest.test_apply_keeps_other_mod_files_and_preferences_unchanged) ... ok
+test_known_decorative_background_suppressed_only_when_veil_controls_backdrop (test_public.BackdropCompatibilityTest.test_known_decorative_background_suppressed_only_when_veil_controls_backdrop) ... ok
+test_full_css_targets_one_global_background (test_public.BackgroundScopeTest.test_full_css_targets_one_global_background) ... ok
+test_full_image_apply_and_switch_back_restore_flags (test_public.BackgroundScopeTest.test_full_image_apply_and_switch_back_restore_flags) ... ok
+test_full_render_geometry_and_bounded_solid_canvas (test_public.BackgroundScopeTest.test_full_render_geometry_and_bounded_solid_canvas) ... ok
+test_legacy_default_and_validation (test_public.BackgroundScopeTest.test_legacy_default_and_validation) ... ok
+test_scope_and_dimensions_survive_portable_preset (test_public.BackgroundScopeTest.test_scope_and_dimensions_survive_portable_preset) ... ok
+test_transparent_scope_has_no_forced_opaque_content_base (test_public.BackgroundScopeTest.test_transparent_scope_has_no_forced_opaque_content_base) ... ok
+test_controls_colors_are_scoped_outside_titlebar_for_all_modes (test_public.BrowserControlsContrastTest.test_controls_colors_are_scoped_outside_titlebar_for_all_modes) ... ok
+test_icon_fix_does_not_recolor_favicons_or_unhide_controls (test_public.BrowserControlsContrastTest.test_icon_fix_does_not_recolor_favicons_or_unhide_controls) ... ok
+test_four_background_cases_apply_restore_disable_and_preserve_other_mods (test_public.CandidateFlowTest.test_four_background_cases_apply_restore_disable_and_preserve_other_mods) ... ok
+test_library_fix_preserves_native_visibility_and_favicons (test_public.LibraryContrastTest.test_library_fix_preserves_native_visibility_and_favicons) ... ok
+test_library_gets_its_own_dark_palette_and_protected_surface (test_public.LibraryContrastTest.test_library_gets_its_own_dark_palette_and_protected_surface) ... ok
+test_changing_back_to_image_restores_previous_flags (test_public.NativeTransparencyTest.test_changing_back_to_image_restores_previous_flags) ... ok
+test_disable_restores_flags_even_after_zen_persisted_them (test_public.NativeTransparencyTest.test_disable_restores_flags_even_after_zen_persisted_them) ... ok
+test_modified_preference_block_refused (test_public.NativeTransparencyTest.test_modified_preference_block_refused) ... ok
+test_native_flags_enabled_only_after_explicit_apply (test_public.NativeTransparencyTest.test_native_flags_enabled_only_after_explicit_apply) ... ok
+test_opaque_css_does_not_clear_native_background_layers (test_public.NativeTransparencyTest.test_opaque_css_does_not_clear_native_background_layers) ... ok
+test_restore_resets_flags_and_preserves_external_userjs (test_public.NativeTransparencyTest.test_restore_resets_flags_and_preserves_external_userjs) ... ok
+test_flatpak_detection_with_fake_home (test_public.ProfilesTest.test_flatpak_detection_with_fake_home) ... ok
+test_missing_malformed_and_duplicate_profiles (test_public.ProfilesTest.test_missing_malformed_and_duplicate_profiles) ... ok
+test_native_relative_absolute_default_and_spaces (test_public.ProfilesTest.test_native_relative_absolute_default_and_spaces) ... ok
+test_permission_and_invalid_profile (test_public.ProfilesTest.test_permission_and_invalid_profile) ... ok
+test_background_scope_updates_controls_and_preview (test_public.PublicInterfaceTest.test_background_scope_updates_controls_and_preview) ... ok
+test_job_callback_runs_on_gui_thread (test_public.PublicInterfaceTest.test_job_callback_runs_on_gui_thread) ... ok
+test_popup_has_contrast (test_public.PublicInterfaceTest.test_popup_has_contrast) ... ok
+test_progressive_gallery (test_public.PublicInterfaceTest.test_progressive_gallery) ... ok
+test_responsive_splitter_and_four_sections (test_public.PublicInterfaceTest.test_responsive_splitter_and_four_sections) ... ok
+test_solid_mode_switch_keeps_image_and_controls (test_public.PublicInterfaceTest.test_solid_mode_switch_keeps_image_and_controls) ... ok
+test_transparency_control_is_independent_and_mode_specific (test_public.PublicInterfaceTest.test_transparency_control_is_independent_and_mode_specific) ... ok
+test_applied_image_url_is_profile_relative (test_public.SafeCssTest.test_applied_image_url_is_profile_relative) ... ok
+test_apply_refuses_external_managed_css_edits (test_public.SafeCssTest.test_apply_refuses_external_managed_css_edits) ... ok
+test_css_rejects_injection_in_url (test_public.SafeCssTest.test_css_rejects_injection_in_url) ... ok
+test_disable_does_not_hide_external_css_edits (test_public.SafeCssTest.test_disable_does_not_hide_external_css_edits) ... ok
+test_disable_only_removes_owned_import (test_public.SafeCssTest.test_disable_only_removes_owned_import) ... ok
+test_import_variants_bom_charset_comments (test_public.SafeCssTest.test_import_variants_bom_charset_comments) ... ok
+test_legacy_import_is_replaced_only_when_owned (test_public.SafeCssTest.test_legacy_import_is_replaced_only_when_owned) ... ok
+test_permission_failure_preserves_external_styles (test_public.SafeCssTest.test_permission_failure_preserves_external_styles) ... ok
+test_restore_recovers_exact_bytes_and_absent_files (test_public.SafeCssTest.test_restore_recovers_exact_bytes_and_absent_files) ... ok
+test_restore_refuses_external_edits (test_public.SafeCssTest.test_restore_refuses_external_edits) ... ok
+test_symlink_profile_files_refused (test_public.SafeCssTest.test_symlink_profile_files_refused) ... ok
+test_bad_preset_preserves_existing_data (test_public.SolidAndPresetsTest.test_bad_preset_preserves_existing_data) ... ok
+test_colors_and_imported_settings_are_validated (test_public.SolidAndPresetsTest.test_colors_and_imported_settings_are_validated) ... ok
+test_portable_preset_roundtrip_and_missing_images (test_public.SolidAndPresetsTest.test_portable_preset_roundtrip_and_missing_images) ... ok
+test_solid_never_loads_an_image (test_public.SolidAndPresetsTest.test_solid_never_loads_an_image) ... ok
+test_solid_preset_needs_no_image (test_public.SolidAndPresetsTest.test_solid_preset_needs_no_image) ... ok
+test_solid_transparency_matches_css_and_pixel_alpha (test_public.SolidAndPresetsTest.test_solid_transparency_matches_css_and_pixel_alpha) ... ok
+test_transparency_defaults_validation_and_portable_presets (test_public.SolidAndPresetsTest.test_transparency_defaults_validation_and_portable_presets) ... ok
+test_external_edit_during_css_preparation_is_never_overwritten (test_public.TransactionRaceTest.test_external_edit_during_css_preparation_is_never_overwritten) ... ok
+test_copy_migration_keeps_originals_and_history (test_public.XdgMigrationTest.test_copy_migration_keeps_originals_and_history) ... ok
+test_malformed_migration_never_creates_settings (test_public.XdgMigrationTest.test_malformed_migration_never_creates_settings) ... ok
+test_xdg_and_relative_env_fallback (test_public.XdgMigrationTest.test_xdg_and_relative_env_fallback) ... ok
+test_conflicting_file_preserved (test_studio.IntegrationTest.test_conflicting_file_preserved) ... ok
+test_css_variables_and_selectors (test_studio.IntegrationTest.test_css_variables_and_selectors) ... ok
+test_disabled_import_does_not_prevent_install (test_studio.IntegrationTest.test_disabled_import_does_not_prevent_install) ... ok
+test_external_window_not_used_as_sidebar (test_studio.IntegrationTest.test_external_window_not_used_as_sidebar) ... ok
+test_missing_image_does_not_write (test_studio.IntegrationTest.test_missing_image_does_not_write) ... ok
+test_preserve_imports_and_third_party_css (test_studio.IntegrationTest.test_preserve_imports_and_third_party_css) ... ok
+test_preserve_userjs_and_existing_enabled_preference (test_studio.IntegrationTest.test_preserve_userjs_and_existing_enabled_preference) ... ok
+test_rollback_on_write_failure (test_studio.IntegrationTest.test_rollback_on_write_failure) ... ok
+test_apply_flow_uses_only_temporary_profile (test_studio.InterfaceTest.test_apply_flow_uses_only_temporary_profile) ... ok
+test_startup_controls_and_sizes (test_studio.InterfaceTest.test_startup_controls_and_sizes) ... ok
+test_extensionless_images_and_invalid_files (test_studio.LibraryTest.test_extensionless_images_and_invalid_files) ... ok
+test_gallery_selection_updates_wallpaper (test_studio.LibraryTest.test_gallery_selection_updates_wallpaper) ... ok
+test_import_preserves_conflicting_files_and_source (test_studio.LibraryTest.test_import_preserves_conflicting_files_and_source) ... ok
+test_muted_dominant_palette (test_studio.PaletteTest.test_muted_dominant_palette) ... ok
+test_states_and_intensity (test_studio.PaletteTest.test_states_and_intensity) ... ok
+test_text_contrast_over_white_wallpaper (test_studio.PaletteTest.test_text_contrast_over_white_wallpaper) ... ok
+test_crud_and_history (test_studio.PresetsTest.test_crud_and_history) ... ok
+test_missing_image_and_future_version (test_studio.PresetsTest.test_missing_image_and_future_version) ... ok
+test_effects_change_pixels (test_studio.RenderingTest.test_effects_change_pixels) ... ok
+test_gaussian_preserves_constant_brightness (test_studio.RenderingTest.test_gaussian_preserves_constant_brightness) ... ok
+test_gaussian_spreads_energy (test_studio.RenderingTest.test_gaussian_spreads_energy) ... ok
+test_geometry_reference_values (test_studio.RenderingTest.test_geometry_reference_values) ... ok
+test_missing_image (test_studio.RenderingTest.test_missing_image) ... ok
+test_multiple_aspect_ratios (test_studio.RenderingTest.test_multiple_aspect_ratios) ... ok
+test_opacity_and_darkness (test_studio.RenderingTest.test_opacity_and_darkness) ... ok
+test_atomic_settings_roundtrip (test_studio.SettingsTest.test_atomic_settings_roundtrip) ... ok
+test_invalid_values (test_studio.SettingsTest.test_invalid_values) ... ok
+test_legacy_migration (test_studio.SettingsTest.test_legacy_migration) ... ok
+
+----------------------------------------------------------------------
+Ran 80 tests in 2.516s
+
+OK

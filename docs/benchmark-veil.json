@@ -1,0 +1,12 @@
+{
+  "import_qt_seconds": 0.16686977999961528,
+  "window_ready_seconds": 0.15722980200007441,
+  "library_seconds": 0.14443410900003073,
+  "library_cached_seconds": 0.005010163999941142,
+  "images": 15,
+  "render_cold_seconds": 0.08259545900000376,
+  "render_warm_seconds": 5.205799971008673e-05,
+  "filtered_seconds": 0.09462682600042172,
+  "solid_seconds": 9.751200013852213e-05,
+  "max_rss_kib": 137908
+}
