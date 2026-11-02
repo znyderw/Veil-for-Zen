@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+
+# Local settings, history and old backups
+/settings.json
+/presets.json
+/assets/v1-backup/
