@@ -8,11 +8,13 @@ O Veil permite usar imagens ou cores sólidas como fundo da barra lateral ou do 
 
 **Barra lateral**
 
-![Prévia do Veil com imagem na barra lateral](assets/sidebar.png)
+![Prévia do Veil](assets/sidebar.png)
+
 
 **Resultado no navegador**
 
-![Zen Browser com fundo personalizado pelo Veil](assets/browser.png)
+
+![Veil aplicado no Zen Browser](assets/browser.png)
 
 *A primeira imagem mostra a prévia no Veil; a segunda mostra o resultado aplicado no Zen Browser.*
 
